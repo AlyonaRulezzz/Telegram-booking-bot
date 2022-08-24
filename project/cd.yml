@@ -1,0 +1,75 @@
+name: GitHub Actions Demo
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-varsion: [ 17.x ]
+    steps:
+    - staging
+    - preprod
+    - approve
+    - production
+## staging stage
+.staging-deploy: &staging-deploy
+  tags: [deploy]
+  stage: staging
+  when: manual
+  script:
+    - echo $CI_BUILD_NAME
+
+
+deploy to dev-1:
+  <<: *staging-deploy
+
+deploy to dev-2:
+  <<: *staging-deploy
+
+deploy to devops-1:
+  <<: *staging-deploy
+
+deploy to devops-2:
+  <<: *staging-deploy
+
+deploy to qa-1:
+  <<: *staging-deploy
+
+deploy to qa-2:
+  <<: *staging-deploy
+
+
+## preprod stage
+deploy to preprod:
+  stage: preprod
+  tags: [deploy]
+  when: manual
+  script:
+    - echo "deploy to preprod"
+
+## approve stage
+approve:
+  stage: approve
+  tags: [deploy]
+  when: manual
+  script:
+    - echo "APPROVED"
+
+NOT approve:
+  stage: approve
+  tags: [deploy]
+  when: manual
+  script:
+    - echo "NOT APPROVED"
+
+## production stage
+deploy to production:
+  stage: production
+  tags: [deploy]
+  when: manual
+  script:
+    - echo "deploy to production!"
